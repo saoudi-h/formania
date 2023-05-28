@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-
+$root = dirname(__DIR__);
 
 // Récupérer la valeur de l'URL
 if (isset($_SERVER['REQUEST_URI'])) {
@@ -37,30 +37,30 @@ if (isset($_SERVER['REQUEST_URI'])) {
     switch ($url) {
         case '/':
             // Page d'accueil
-            include 'pages/home.php';
+            include $root.'/views/home.php';
             break;
         case '/login':
-            include 'pages/login.php';
+            include $root.'/views/login.php';
             break;
         case '/course':
-            include 'pages/course.php';
+            include $root.'/views/course.php';
             break;
         case '/courses':
-            include 'pages/courses.php';
+            include '../views/courses.php';
             break;
         case '/profile':
-            include 'pages/profile.php';
+            include '../views/profile.php';
             break;
         case '/register':
-            include 'pages/register.php';
+            include '../views/register.php';
             break;
         default:
             // Page 404 - Page non trouvée
-            include 'pages/notFound.php';
+            include '../views/notFound.php';
             break;
     }
 
-    require_once 'components/footer.php';
+    require_once '../components/footer.php';
 
     ?>
 
