@@ -12,7 +12,7 @@ $pageStylesheets = [
 $pageScripts = [
     // "assets/js/index.js"
 ];
-require_once './components/head.php';
+require $root.'/components/head.php';
 ?>
 
 <div>home</div>
