@@ -16,7 +16,8 @@ $pageStylesheets = [
 $pageScripts = [
     // "assets/js/index.js"
 ];
-require $root.'/components/head.php';
+require $root . '/components/head.php';
+
 ?>
 
 <section class="h-100 gradient-form" style="background-color: #eee;">
