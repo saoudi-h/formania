@@ -10,8 +10,8 @@ git clone https://github.com/saoudi-h/formania.git
 ```
 2. Installez les dépendances nécessaires :
 ```bash
-cd PortExpress
-npm install
+cd formania
+php install.php
 ```
 3. Pour lancer le serveur en mode developpement, exécutez la commande suivante :
 ```bash
