@@ -14,8 +14,15 @@ require_once '../App/FlashMessage.php';
 
 use Formania\App\FlashMessage;
 
+
+require_once '../App/Authentification.php';
+
+use Formania\App\{Autentification, Role};
+
 class RegisterController extends BaseController
 {
+
+    protected $allowedRoles = [Role::notAuthenticated];
 
 
     /**

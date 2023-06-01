@@ -11,6 +11,7 @@ class UserModel extends BaseModel
 {
     protected $table = "user";
     protected $fields = ['id', 'firstname', 'lastname', 'username', 'email', 'password', 'status', 'birthdate', 'gender', 'phone', 'created_at', 'updated_at'];
+    protected $uniques = ['email'];
 
     // public $id;
 

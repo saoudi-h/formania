@@ -2,8 +2,18 @@
 
 namespace Formania\Controllers;
 
+require_once '../App/Authentification.php';
+use Formania\App\Autentification;
+
+
+
 class BaseController
 {
+
+    /**
+     *store all authorized role
+     */
+    protected $allowedRoles = [];
 
     /**
      * Permet de charger un modèle
@@ -16,7 +26,6 @@ class BaseController
         // On va chercher le fichier correspondant au modèle souhaité
         require_once(ROOT . '/models/' . $model . '.php');
 
-        // On crée une instance de ce modèle. Ainsi "Article" sera accessible par $this->Article
         $this->$model = new $model();
     }
 
@@ -29,10 +38,8 @@ class BaseController
      */
     public function render(string $fichier, array $data = [])
     {
-        // Récupère les données et les extrait sous forme de variables
         extract($data);
 
-        // Crée le chemin et inclut le fichier de vue
         require_once(ROOT . 'views/' . strtolower(get_class($this)) . '/' . $fichier . '.php');
     }
 }

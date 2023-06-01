@@ -4,6 +4,8 @@
 namespace Formania\Models;
 
 require_once '../App/DatabaseConnection.php';
+
+use ErrorException;
 use Formania\App\DatabaseConnection;
 
 
@@ -12,6 +14,7 @@ use PDO;
 abstract class BaseModel
 {
     protected $table;
+    protected $uniques = [];
     protected $fields = [];
     protected PDO $db;
 
@@ -32,6 +35,18 @@ abstract class BaseModel
         $sql = "SELECT * FROM " . $this->table . " WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getByUnique($name,$value)
+    {
+        if(!in_array($name,$this->uniques,true) ){
+            throw new ErrorException("Il ne devrait pas être possible d'appeler la méthode getByUnique avec un identifiant inexistant.");
+        }
+        $sql = "SELECT * FROM " . $this->table . " WHERE $name = :value";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':value', $value);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }

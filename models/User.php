@@ -91,7 +91,7 @@ class User
 
         if (empty($this->phone)) {
             $errors[] = "Le numéro de téléphone est obligatoire.";
-        } elseif(!preg_match("/^\\+?\\d{1,4}?[-.\\s]?\\(?\\d{1,3}?\\)?[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,9}$/", $this->phone)){
+        } elseif (!preg_match("/^\\+?\\d{1,4}?[-.\\s]?\\(?\\d{1,3}?\\)?[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,9}$/", $this->phone)) {
             $errors[] = "Le numéro de téléphone n'est pas valide.";
         }
 
@@ -115,5 +115,9 @@ class User
     private function hashPassword()
     {
         $this->password = password_hash($this->password, PASSWORD_BCRYPT);
+    }
+    public function checkPassword($password)
+    {
+        return password_verify($password, $this->password);
     }
 }

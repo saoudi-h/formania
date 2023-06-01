@@ -1,5 +1,7 @@
 <?php
-session_start();
+
+
+
 
 use Formania\App\Router;
 use formania\App\Config;
