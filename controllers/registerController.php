@@ -32,6 +32,8 @@ class RegisterController extends BaseController
      */
     public function index()
     {
+        $this->redirectUnauthorized('profile');
+
         $page = [
             "name" => "register",
             "method" => "GET",
@@ -58,6 +60,7 @@ class RegisterController extends BaseController
      */
     public function register()
     {
+        $this->redirectUnauthorized('profile');
         $user = new User($_POST);
         $errors = $user->validate();
 

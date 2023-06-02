@@ -18,26 +18,18 @@ class Authentification
     // $_SESSION['authenticated'];
     // $_SESSION['role'];
 
-    /**
-     * role de l'utilisateur
-     */
-    public $role;
-    public $isAuthenticated;
 
-    public function initAuthentification()
+    public static function initAuthentification()
     {
-        // démarrer une session
-        $this->initSession();
-
         // vérifier si l'utilisateur actuel a déja une session
         if (!isset($_SESSION['authenticated'])) {
-            $this->restartSession();
+            self::restartSession();
             $_SESSION['authenticated'] = false;
             $_SESSION['role'] = Role::notAuthenticated;
         }
     }
 
-    public function initSession()
+    public static function initSession()
     {
         // securiser la session
         ini_set('session.cookie_secure', '1');
@@ -53,9 +45,26 @@ class Authentification
         session_start();
     }
 
-    public function restartSession()
+    public static function restartSession()
     {
+        $_SESSION = array();
         session_destroy();
         session_start();
+    }
+    public static function getRoleFrom($strRole)
+    {
+        $role = null;
+        switch ($strRole) {
+            case 'student':
+                $role = Role::student;
+                break;
+            case 'former':
+                $role = Role::former;
+                break;
+            case 'administrator':
+                $role = Role::administrator;
+                break;
+        }
+        return $role;
     }
 }

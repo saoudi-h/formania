@@ -15,7 +15,8 @@ use Formania\Models\UserModel;
 
 
 require_once '../App/Authentification.php';
-use Formania\App\{Autentification,Role};
+
+use Formania\App\{Autentification, Role};
 
 class LoginController extends BaseController
 {
@@ -29,6 +30,8 @@ class LoginController extends BaseController
      */
     public function index()
     {
+        $this->redirectUnauthorized('profile');
+
         $page = [
             "name" => "login",
             "method" => "GET",
@@ -54,6 +57,7 @@ class LoginController extends BaseController
      */
     public function login()
     {
+        $this->redirectUnauthorized('profile');
         if (isset($_POST['email']) && isset($_POST['password'])) {
             $userModel = new UserModel();
             try {
@@ -72,12 +76,11 @@ class LoginController extends BaseController
                 exit;
             }
             if ($user->checkPassword($_POST['password'])) {
-                $_SESSION['authenticated'] = true;
-                $_SESSION['user_id'] = $user->id;
+                $userModel->login($user);
                 $successMessage = 'Connexion réussi.';
                 FlashMessage::set('success', $successMessage);
-                header('location: profile');
-                exit;
+                // header('location: profile');
+                // exit;
             }
             $warningMessage = 'Mot de passe incorrect.';
             FlashMessage::set('warning', $warningMessage);

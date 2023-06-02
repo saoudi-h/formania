@@ -1,10 +1,14 @@
 <?php
 
 
+require_once '../App/Authentification.php';
 
-
+use Formania\App\Authentification;
 use Formania\App\Router;
 use formania\App\Config;
+
+Authentification::initSession();
+Authentification::initAuthentification();
 
 define('ROOT', dirname(__DIR__));
 require ROOT . '../App/Config.php';
@@ -21,6 +25,7 @@ $router->post('/course', 'CourseController@store');
 $router->get('/course/{slug}', 'CourseController@show');
 $router->put('/course/{slug}', 'CourseController@update');
 $router->delete('/course/{slug}', 'CourseController@delete');
+$router->get('/logout', 'LogoutController@logout');
 $router->get('/login', 'LoginController@index');
 $router->post('/login', 'LoginController@login');
 $router->get('/register', 'RegisterController@index');

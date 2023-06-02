@@ -42,4 +42,10 @@ class BaseController
 
         require_once(ROOT . 'views/' . strtolower(get_class($this)) . '/' . $fichier . '.php');
     }
+
+    public function redirectUnauthorized($toLocation="index"){
+        if(!isset($_SESSION['role']) || !in_array($_SESSION['role'],$this->allowedRoles)){
+            header("location: $toLocation");
+        }
+    }
 }
