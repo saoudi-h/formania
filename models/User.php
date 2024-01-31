@@ -11,11 +11,12 @@ use PDOException;
 class User
 {
     public $id;
+    public $firstName;
+    public $lastName;
     public $userName;
     public $email;
     public $password;
-    public $firstName;
-    public $lastName;
+    public $role;
     public $phone;
     public $birthdate;
     public $gender;
@@ -30,6 +31,7 @@ class User
         $this->userName = isset($data['username']) ? $data['username'] : null;
         $this->email = isset($data['email']) ? $data['email'] : null;
         $this->password = isset($data['password']) ? $data['password'] : null;
+        $this->role = isset($data['role']) ? $data['role'] : null;
         $this->phone = isset($data['phone']) ? $data['phone'] : null;
         $this->birthdate = isset($data['birthdate']) ? $data['birthdate'] : null;
         $this->gender = isset($data['gender']) ? $data['gender'] : null;
@@ -45,6 +47,7 @@ class User
             'password' => $this->password,
             'firstname' => $this->firstName,
             'lastname' => $this->lastName,
+            'role' => $this->role,
             'phone' => $this->phone,
             'birthdate' => $this->birthdate,
             'gender' => $this->gender,
@@ -91,7 +94,7 @@ class User
 
         if (empty($this->phone)) {
             $errors[] = "Le numéro de téléphone est obligatoire.";
-        } elseif(!preg_match("/^\\+?\\d{1,4}?[-.\\s]?\\(?\\d{1,3}?\\)?[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,9}$/", $this->phone)){
+        } elseif (!preg_match("/^\\+?\\d{1,4}?[-.\\s]?\\(?\\d{1,3}?\\)?[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,9}$/", $this->phone)) {
             $errors[] = "Le numéro de téléphone n'est pas valide.";
         }
 
@@ -102,6 +105,7 @@ class User
     {
         //traitement avant enregistreement
         $this->hashPassword();
+        $this->generateUserName();
         $userModel = new UserModel();
         $userData = $this->toArray();
         try {
@@ -115,5 +119,40 @@ class User
     private function hashPassword()
     {
         $this->password = password_hash($this->password, PASSWORD_BCRYPT);
+    }
+    public function checkPassword($password)
+    {
+        return password_verify($password, $this->password);
+    }
+    public function generateUserName()
+    {
+        $this->userName = strtolower($this->firstName . $this->lastName) . rand(1000, 9999);
+    }
+
+    /**
+     * Get either a Gravatar URL or complete image tag for a specified email address.
+     *
+     * @param string $email The email address
+     * @param string $s Size in pixels, defaults to 80px [ 1 - 2048 ]
+     * @param string $d Default imageset to use [ 404 | mp | identicon | monsterid | wavatar ]
+     * @param string $r Maximum rating (inclusive) [ g | pg | r | x ]
+     * @param boole $img True to return a complete IMG tag False for just the URL
+     * @param array $atts Optional, additional key/value attributes to include in the IMG tag
+     * @return String containing either just a URL or a complete image tag
+     * @source https://gravatar.com/site/implement/images/php/
+     */
+    public function getGravatar($s = 80, $d = 'mp', $r = 'g', $img = false, $atts = array())
+    {
+        $email = $this->email;
+        $url = 'https://www.gravatar.com/avatar/';
+        $url .= md5(strtolower(trim($email)));
+        $url .= "?s=$s&d=$d&r=$r";
+        if ($img) {
+            $url = '<img src="' . $url . '"';
+            foreach ($atts as $key => $val)
+                $url .= ' ' . $key . '="' . $val . '"';
+            $url .= ' />';
+        }
+        return $url;
     }
 }

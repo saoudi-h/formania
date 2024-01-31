@@ -3,13 +3,26 @@
 namespace Formania\Controllers;
 
 require_once 'BaseController.php';
+require_once '../App/FlashMessage.php';
+require_once '../models/UserModel.php';
+require_once '../models/User.php';
 
+use Exception;
+use Formania\App\FlashMessage;
 use Formania\Controllers\BaseController;
+use Formania\Models\User;
+use Formania\Models\UserModel;
+
+
+require_once '../App/Authentification.php';
+
+use Formania\App\{Autentification, Role};
 
 class LoginController extends BaseController
 {
 
 
+    protected $allowedRoles = [Role::notAuthenticated];
     /**
      * Cette méthode affiche le formulaire de connexion
      *
@@ -17,6 +30,8 @@ class LoginController extends BaseController
      */
     public function index()
     {
+        $this->redirectUnauthorized('profile');
+
         $page = [
             "name" => "login",
             "method" => "GET",
@@ -42,14 +57,40 @@ class LoginController extends BaseController
      */
     public function login()
     {
-        echo "<div>login Home world</div>";
-        // On instancie le modèle "Course"
-        $this->loadModel('Course');
-
-        // On stocke la liste des Courses dans $Courses
-        // $Courses = $this->Course->getAll();
-
-        // On envoie les données à la vue index
-        // $this->render('index', compact('Courses'));
+        $this->redirectUnauthorized('profile');
+        if (isset($_POST['email']) && isset($_POST['password'])) {
+            $userModel = new UserModel();
+            try {
+                $userData = $userModel->getByUnique('email', $_POST['email']);
+                if (!isset($userData['email'])) {
+                    $warningMessage = 'Email incorrecte.';
+                    FlashMessage::set('warning', $warningMessage);
+                    header('location: login');
+                    exit;
+                }
+                $user = new User($userData);
+            } catch (Exception $e) {
+                $errorMessage = 'Erreur innatendu.';
+                FlashMessage::set('danger', $errorMessage);
+                header('location: login');
+                exit;
+            }
+            if ($user->checkPassword($_POST['password'])) {
+                $userModel->login($user);
+                $successMessage = 'Connexion réussi.';
+                FlashMessage::set('success', $successMessage);
+                // header('location: profile');
+                // exit;
+            }
+            $warningMessage = 'Mot de passe incorrect.';
+            FlashMessage::set('warning', $warningMessage);
+            header('location: login');
+            exit;
+        } else {
+            $dangerMessage = 'Une erreur est survenue veuillez réessayer.';
+            FlashMessage::set('danger', $dangerMessage);
+            header('location: /login');
+            exit;
+        }
     }
 }

@@ -14,8 +14,15 @@ require_once '../App/FlashMessage.php';
 
 use Formania\App\FlashMessage;
 
+
+require_once '../App/Authentification.php';
+
+use Formania\App\{Autentification, Role};
+
 class RegisterController extends BaseController
 {
+
+    protected $allowedRoles = [Role::notAuthenticated];
 
 
     /**
@@ -25,6 +32,8 @@ class RegisterController extends BaseController
      */
     public function index()
     {
+        $this->redirectUnauthorized('profile');
+
         $page = [
             "name" => "register",
             "method" => "GET",
@@ -51,6 +60,7 @@ class RegisterController extends BaseController
      */
     public function register()
     {
+        $this->redirectUnauthorized('profile');
         $user = new User($_POST);
         $errors = $user->validate();
 

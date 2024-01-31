@@ -77,9 +77,7 @@ class Router
 
             $controller = $this->routes[$method][$segments[0] . '/{slug}'];
             $slug = $segments[1];
-        }
-
-        else {
+        } else {
             $controller = $this->routes['GET']['/404'];
         }
         $this->callControllerMethod($controller, $slug);
@@ -119,7 +117,6 @@ class Router
 
     private function showError($message)
     {
-
         require '../controllers/ErrorController.php';
         $errorController = new ErrorController();
         call_user_func_array([$errorController, 'show'], [$message]);
